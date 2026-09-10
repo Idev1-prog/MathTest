@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Application/Application.vcxproj" />
+  <Project Path="GTests/GTests.vcxproj" />
+  <Project Path="MathTest/MathTest.vcxproj" />
+</Solution>
