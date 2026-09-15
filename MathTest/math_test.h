@@ -3,17 +3,12 @@
 
 struct  Task
 {
-	int num1;
-	int num2;
-	char oper;
-	int answer;
-};
+	int _num1;
+	int _num2;
+	char _oper;
+	int _answer;
 
-class MathTest
-{
-	Task task;
-public:
-	MathTest();
-	MathTest(int min, int max, char op);
-	~MathTest() = default;
+	Task();
+	Task(int min, int max, char op);
+	~Task() = default;
 };
