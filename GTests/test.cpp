@@ -18,3 +18,6 @@ TEST(TaskTests, ConstructTest) {
 TEST(TaskTests, ExceptionsTest) {
 	EXPECT_ANY_THROW(Task obj(30, 50, '8'););
 }
+
+TEST(MathTestTests, BaseContructorTest) {
+}
