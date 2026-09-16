@@ -57,6 +57,7 @@ std::string MathTest::parse_to_string(int index) {
 }
 
 MathTest::MathTest(int tasks_count) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
+	if (tasks_count <= 0) throw std::invalid_argument("The number of tasks cannot be <= 0.");
 	_tasks = new Task[_tasks_count];
 	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++){
@@ -66,6 +67,7 @@ MathTest::MathTest(int tasks_count) : _tasks_count(tasks_count), _correct_user_a
 }
 
 MathTest::MathTest(int tasks_count, int min_num, int max_num) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
+	if (tasks_count <= 0) throw std::invalid_argument("The number of tasks cannot be <= 0.");
 	_tasks = new Task[_tasks_count];
 	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++) {
@@ -75,6 +77,7 @@ MathTest::MathTest(int tasks_count, int min_num, int max_num) : _tasks_count(tas
 }
 
 MathTest::MathTest(int tasks_count, int min_num, int max_num, const char* opers) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
+	if (tasks_count <= 0) throw std::invalid_argument("The number of tasks cannot be <= 0.");
 	_tasks = new Task[_tasks_count];
 	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++) {
