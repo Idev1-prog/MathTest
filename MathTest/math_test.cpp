@@ -1,5 +1,7 @@
 #include "math_test.h"
+
 const int* exluded_ASCII_values_for_operators = new int[2]{ 44, 46 }; // временное решение, ожидает исправления
+
 
 int generator(int min, int max, bool excluded_values_count = 0, const int* exluded_values = nullptr) {
 	if (excluded_values_count == 0)
@@ -39,14 +41,31 @@ Task::Task(int min, int max, char op) {
 	_oper = op;
 	_num1 = generator(min, max);
 	_num2 = generator(min, max);
+	if (op == '/' && _num2 == 0) _num2 = 1;
 	_answer = calculate_with_char_operator(_num1, _num2, _oper);
 }
 
-MathTest::MathTest(int tasks_count) : _tasks_count(tasks_count) {
+MathTest::MathTest(int tasks_count) : _tasks_count(tasks_count), _correct_user_answers_count(0) {
 	_tasks = new Task[_tasks_count];
-	_user_answers_count = new int[_tasks_count];
+	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++){
 		_tasks[i] = Task(0, 20, generator(42, 47, true, exluded_ASCII_values_for_operators));
+	}
+}
+
+MathTest::MathTest(int tasks_count, int min_num, int max_num) : _tasks_count(tasks_count), _correct_user_answers_count(0) {
+	_tasks = new Task[_tasks_count];
+	_user_answers = new int[_tasks_count];
+	for (int i = 0; i < tasks_count; i++) {
+		_tasks[i] = Task(min_num, max_num, generator(42, 47, true, exluded_ASCII_values_for_operators));
+	}
+}
+
+MathTest::MathTest(int tasks_count, int min_num, int max_num, const char* opers) : _tasks_count(tasks_count), _correct_user_answers_count(0) {
+	_tasks = new Task[_tasks_count];
+	_user_answers = new int[_tasks_count];
+	for (int i = 0; i < tasks_count; i++) {
+		_tasks[i] = Task(min_num, max_num, opers[i]);
 	}
 }
 

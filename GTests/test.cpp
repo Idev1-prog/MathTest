@@ -20,4 +20,23 @@ TEST(TaskTests, ExceptionsTest) {
 }
 
 TEST(MathTestTests, BaseContructorTest) {
+	MathTest obj(5);
+	EXPECT_EQ(obj.get_tasks_count(), 5);
+	std::vector<char> opers = { '*', '-', '+', '/' };
+	for (int i = 0; i < 5; i++) {
+		auto target = std::find(opers.begin(), opers.end(), obj.get_tasks()[i]._oper);
+		EXPECT_TRUE(target != opers.end());
+	}
+}
+
+TEST(MathTestTests, AdvancedContructorTest) {
+	char* opers = new char[5] {'+', '-', '*', '*', '/'};
+	MathTest obj(5, 18, 20, opers);
+	for (int i = 0; i < 5; i++) {
+		EXPECT_EQ(obj.get_tasks()[i]._oper, opers[i]);
+		EXPECT_TRUE(obj.get_tasks()[i]._num1 >= 18);
+		EXPECT_TRUE(obj.get_tasks()[i]._num1 <= 20);
+		EXPECT_TRUE(obj.get_tasks()[i]._num2 >= 18);
+		EXPECT_TRUE(obj.get_tasks()[i]._num2 <= 20);
+	}
 }

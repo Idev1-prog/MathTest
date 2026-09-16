@@ -19,11 +19,19 @@ class MathTest
 {
 	Task* _tasks;
 	int _tasks_count;
-	int* _user_answers_count; // потенциально к удалению
+	int* _user_answers; // потенциально к удалению
 	int _correct_user_answers_count;
 
 public:
 	MathTest(int tasks_count = 1);
+	MathTest(int tasks_count, int min_num, int max_num);
+	MathTest(int tasks_count, int min_num, int max_num, const char* opers);
+	Task* get_tasks() {
+		return _tasks;
+	}
+	int get_tasks_count() {
+		return _tasks_count;
+	}
 	~MathTest();
 
 
