@@ -27,6 +27,17 @@ TEST(TaskTests, ConstructTest) {
 	EXPECT_EQ(obj4._answer, 100);
 }
 
+TEST(TaskTests, TwoParamConstructorTest) {
+    Task obj(20, 50);
+    std::vector<char> valid_opers = { '+', '-', '*', '/' };
+    auto it = std::find(valid_opers.begin(), valid_opers.end(), obj.get_char_oper());
+    EXPECT_TRUE(it != valid_opers.end());
+    EXPECT_GE(obj._num1, 20);
+    EXPECT_LE(obj._num1, 50);
+    EXPECT_GE(obj._num2, 20);
+    EXPECT_LE(obj._num2, 50);
+}
+
 TEST(MathTestTests, BaseContructorTest) {
 	MathTest obj(5);
 	EXPECT_EQ(obj.get_tasks_count(), 5);

@@ -18,6 +18,7 @@ struct Task
 	int _answer;
 
 	Task();
+	Task(int min, int max);
 	Task(int min, int max, Operator op);
 	char get_char_oper() const noexcept;
 	~Task() = default;

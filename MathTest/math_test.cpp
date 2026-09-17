@@ -35,6 +35,15 @@ Task::Task() {
 	if (_oper == Divide && _num2 == 0) _num2 = 1;
 	_answer = calculate_with_operator(_num1, _num2, _oper);
 }
+
+Task::Task(int min, int max) {
+	_num1 = generator(min, max);
+	_num2 = generator(min, max);
+	_oper = Operator(generator(0, 3));
+	if (_oper == Divide && _num2 == 0) _num2 = 1;
+	_answer = calculate_with_operator(_num1, _num2, _oper);
+}
+
 Task::Task(int min, int max, Operator op) {
 	_oper = op;
 	_num1 = generator(min, max);
