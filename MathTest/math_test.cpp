@@ -111,13 +111,20 @@ void MathTest::assign_user_task() {
 		int user_answer;
 		std::cout << "Вопрос номер " << i + 1 << ": " << _tasks[i]._num1 << ' ' << _tasks[i].get_char_oper() << ' ' << _tasks[i]._num2 << std::endl;
 		std::cout << "Ваш ответ: ";
-		std::cin >> user_answer;
-		std::cout << "Ответ записан, переходим к следующему вопросу" << '\n' << std::endl;
-		add_user_response(user_answer, i);
+		if (std::cin >> user_answer) {
+			std::cout << "Ответ записан, переходим к следующему вопросу\n" << std::endl;
+			add_user_response(user_answer, i);
+		}
+		else {
+			std::cout << "Ошибка: введите именно целочисленное значение!\n" << std::endl;;
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			i--;
+		}
 	}
 }
 
-void MathTest::add_user_response(int user_answer, int num_of_question) {
+void MathTest::add_user_response(int user_answer, int num_of_question) noexcept {
 	_user_answers[num_of_question] = user_answer;
 	if (_tasks[num_of_question]._answer == user_answer) {
 		_user_answers_statuses[num_of_question] = true;

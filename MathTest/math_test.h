@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <string>
 #include <array>
+#include <vector>
+#include <typeinfo>
 
 enum Operator {
 	Plus, Minus, Multiply, Divide
@@ -66,7 +68,7 @@ public:
 		_correct_user_answers_count = 0;
 	}
 	void assign_user_task();
-	void add_user_response(int user_answer, int num_of_question);
+	void add_user_response(int user_answer, int num_of_question) noexcept;
 	void show_statistics();
 	void run();
 
