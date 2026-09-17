@@ -1,7 +1,12 @@
 #include <iostream>
-#define GREETING "Привет!!!"
+#include <locale>
+#include "math_test.h"
+#include <time.h>
 
 int main() {
-	std::cout << GREETING;
+	srand(time(nullptr));
+	setlocale(LC_ALL, "Rus");
+	MathTest test(10, 0, 20);
+	test.run();
 	return 200;
 }
