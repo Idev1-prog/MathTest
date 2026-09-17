@@ -1,8 +1,5 @@
 #include "math_test.h"
 
-const int* exluded_ASCII_values_for_operators = new int[2]{ 44, 46 }; // временное решение, ожидает исправления (счетчик костылей +1)
-
-
 int generator(int min, int max, int excluded_values_count = 0, const int* exluded_values = nullptr) {
 	if (excluded_values_count == 0)
 		return min + rand() % (max - min + 1);
@@ -16,15 +13,15 @@ int generator(int min, int max, int excluded_values_count = 0, const int* exlude
 	}
 }
 
-int calculate_with_char_operator(int num1, int num2, char op) {
+int calculate_with_operator(int num1, int num2, Operator op) {
 	switch (op) {
-	case '+':
+	case Plus:
 		return num1 + num2;
-	case '-':
+	case Minus:
 		return num1 - num2;
-	case '*':
+	case Multiply:
 		return num1 * num2;
-	case '/':
+	case Divide:
 		return num1 / num2;
 	default:
 		throw std::invalid_argument("Invalid operation argument");
@@ -32,28 +29,42 @@ int calculate_with_char_operator(int num1, int num2, char op) {
 }
 
 Task::Task() {
-	_num1 = rand() % 200;
-	_num2 = rand() % 200;
-	_oper = '+';
-	_answer = _num1 + _num2;
+	_num1 = generator(0, 200);
+	_num2 = generator(0, 200);
+	_oper = Operator(generator(0, 3));
+	if (_oper == Divide && _num2 == 0) _num2 = 1;
+	_answer = calculate_with_operator(_num1, _num2, _oper);
 }
-Task::Task(int min, int max, char op) {
+Task::Task(int min, int max, Operator op) {
 	_oper = op;
 	_num1 = generator(min, max);
 	_num2 = generator(min, max);
-	if (op == '/' && _num2 == 0) _num2 = 1; // счетчик костылей +1
-	_answer = calculate_with_char_operator(_num1, _num2, _oper);
+	if (op == Divide && _num2 == 0) _num2 = 1;
+	_answer = calculate_with_operator(_num1, _num2, _oper);
 }
 
-void MathTest::calculate_max_task_wight() {
-	for (int i = 0; i < _tasks_count; i++) {
-		std::string str_task = parse_to_string(i);
-		if (str_task.size() > _max_task_wight) _max_task_wight = str_task.size();
+char Task::get_char_oper() const noexcept {
+	switch (_oper) {
+	case Plus:
+		return '+';
+	case Minus:
+		return '-' ;
+	case Multiply:
+		return '*';
+	case Divide:
+		return '/';
 	}
 }
 
-std::string MathTest::parse_to_string(int index) {
-	return std::to_string(_tasks[index]._num1) + _tasks[index]._oper + std::to_string(_tasks[index]._num2);
+void MathTest::calculate_max_task_width() noexcept {
+	for (int i = 0; i < _tasks_count; i++) {
+		std::string str_task = parse_to_string(i);
+		if (str_task.size() > _max_task_width) _max_task_width = str_task.size();
+	}
+}
+
+std::string MathTest::parse_to_string(int index) const noexcept {
+	return std::to_string(_tasks[index]._num1) + _tasks[index].get_char_oper() + std::to_string(_tasks[index]._num2);
 }
 
 MathTest::MathTest(int tasks_count) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
@@ -61,9 +72,9 @@ MathTest::MathTest(int tasks_count) : _tasks_count(tasks_count), _correct_user_a
 	_tasks = new Task[_tasks_count];
 	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++){
-		_tasks[i] = Task(0, 20, generator(42, 47, 2, exluded_ASCII_values_for_operators));
+		_tasks[i] = Task(0, 20, Operator(generator(0, 3)));
 	}
-	calculate_max_task_wight();
+	calculate_max_task_width();
 }
 
 MathTest::MathTest(int tasks_count, int min_num, int max_num) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
@@ -71,25 +82,25 @@ MathTest::MathTest(int tasks_count, int min_num, int max_num) : _tasks_count(tas
 	_tasks = new Task[_tasks_count];
 	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++) {
-		_tasks[i] = Task(min_num, max_num, generator(42, 47, 2, exluded_ASCII_values_for_operators));
+		_tasks[i] = Task(min_num, max_num, Operator(generator(0, 3)));
 	}
-	calculate_max_task_wight();
+	calculate_max_task_width();
 }
 
-MathTest::MathTest(int tasks_count, int min_num, int max_num, const char* opers) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
+MathTest::MathTest(int tasks_count, int min_num, int max_num, const Operator* opers) : _tasks_count(tasks_count), _correct_user_answers_count(0), _user_answers_statuses(_tasks_count) {
 	if (tasks_count <= 0) throw std::invalid_argument("The number of tasks cannot be <= 0.");
 	_tasks = new Task[_tasks_count];
 	_user_answers = new int[_tasks_count];
 	for (int i = 0; i < tasks_count; i++) {
 		_tasks[i] = Task(min_num, max_num, opers[i]);
 	}
-	calculate_max_task_wight();
+	calculate_max_task_width();
 }
 
 void MathTest::assign_user_task() {
 	for (int i = 0; i < _tasks_count; i++) {
 		int user_answer;
-		std::cout << "Вопрос номер " << i + 1 << ": " << _tasks[i]._num1 << ' ' << _tasks[i]._oper << ' ' << _tasks[i]._num2 << std::endl;
+		std::cout << "Вопрос номер " << i + 1 << ": " << _tasks[i]._num1 << ' ' << _tasks[i].get_char_oper() << ' ' << _tasks[i]._num2 << std::endl;
 		std::cout << "Ваш ответ: ";
 		std::cin >> user_answer;
 		std::cout << "Ответ записан, переходим к следующему вопросу" << '\n' << std::endl;
@@ -111,32 +122,32 @@ void MathTest::show_statistics() {
 	const std::array<std::string, 4> first_col_names = {"Question", "True Answer", "Your Answer", "Result"};
 	std::cout << "| " << std::setw(first_col_size) << std::right << "No" << ' ';
 	for (int i = 0; i < _tasks_count; i++) {
-		std::cout << "| " << std::setw(_max_task_wight) << std::right << i + 1 << ' ';
+		std::cout << "| " << std::setw(_max_task_width) << std::right << i + 1 << ' ';
 	}
 	std::cout << '|' << std::endl;
-	std::cout << '+' << std::setw(first_col_size + (_max_task_wight + 3) * _tasks_count + 3) << std::setfill('-') << '+' << std::setfill(' ') << std::endl;
+	std::cout << '+' << std::setw(first_col_size + (_max_task_width + 3) * _tasks_count + 3) << std::setfill('-') << '+' << std::setfill(' ') << std::endl;
 
 	std::cout << "| " << std::setw(first_col_size) << std::right << first_col_names[0] << ' ';
 	for (int i = 0; i < _tasks_count; i++) {
-		std::cout << "| " << std::setw(_max_task_wight) << std::right << parse_to_string(i) << ' ';
+		std::cout << "| " << std::setw(_max_task_width) << std::right << parse_to_string(i) << ' ';
 	}
 	std::cout << '|' << std::endl;
 
 	std::cout << "| " << std::setw(first_col_size) << std::right << first_col_names[1] << ' ';
 	for (int i = 0; i < _tasks_count; i++) {
-		std::cout << "| " << std::setw(_max_task_wight) << std::right << _tasks[i]._answer << ' ';
+		std::cout << "| " << std::setw(_max_task_width) << std::right << _tasks[i]._answer << ' ';
 	}
 	std::cout << '|' << std::endl;
 
 	std::cout << "| " << std::setw(first_col_size) << std::right << first_col_names[2] << ' ';
 	for (int i = 0; i < _tasks_count; i++) {
-		std::cout << "| " << std::setw(_max_task_wight) << std::right << _user_answers[i] << ' ';
+		std::cout << "| " << std::setw(_max_task_width) << std::right << _user_answers[i] << ' ';
 	}
 	std::cout << '|' << std::endl;
 
 	std::cout << "| " << std::setw(first_col_size) << std::right << first_col_names[3] << ' ';
 	for (int i = 0; i < _tasks_count; i++) {
-		std::cout << "| " << std::setw(_max_task_wight) << std::right << ((_user_answers_statuses[i] == true) ? '+' : '-') << ' ';
+		std::cout << "| " << std::setw(_max_task_width) << std::right << ((_user_answers_statuses[i] == true) ? '+' : '-') << ' ';
 	}
 	std::cout << '|' << std::endl;
 

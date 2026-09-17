@@ -6,18 +6,22 @@
 #include <string>
 #include <array>
 
+enum Operator {
+	Plus, Minus, Multiply, Divide
+};
+
 struct Task
 {
 	int _num1;
 	int _num2;
-	char _oper;
+	Operator _oper;
 	int _answer;
 
 	Task();
-	Task(int min, int max, char op);
+	Task(int min, int max, Operator op);
+	char get_char_oper() const noexcept;
 	~Task() = default;
 };
-
 
 class MathTest
 {
@@ -26,17 +30,19 @@ class MathTest
 	int* _user_answers;
 	int _correct_user_answers_count;
 	std::vector<bool> _user_answers_statuses;
-	int _max_task_wight = 0;
-	std::string parse_to_string(int index);
-	void calculate_max_task_wight();
+	int _max_task_width = 0;
+	std::string parse_to_string(int index) const noexcept;
+	void calculate_max_task_width() noexcept;
 public:
 	MathTest(int tasks_count = 1);
 	MathTest(int tasks_count, int min_num, int max_num);
-	MathTest(int tasks_count, int min_num, int max_num, const char* opers);
-	Task* get_tasks() {
+	MathTest(int tasks_count, int min_num, int max_num, const Operator* opers);
+	MathTest(const MathTest&) = delete;
+	MathTest(MathTest&&) = delete;
+	Task* get_tasks() noexcept {
 		return _tasks;
 	}
-	int get_tasks_count() {
+	int get_tasks_count() const noexcept {
 		return _tasks_count;
 	}
 	int get_correct_count() const {
@@ -63,4 +69,6 @@ public:
 	void show_statistics();
 	void run();
 
+	MathTest& operator=(const MathTest&) = delete;
+	MathTest& operator=(MathTest&&) = delete;
 };

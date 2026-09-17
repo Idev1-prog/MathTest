@@ -6,7 +6,7 @@
 int main() {
 	srand(time(nullptr));
 	setlocale(LC_ALL, "Rus");
-	MathTest test(10, 10, 11);
+	MathTest test(10, 0, 20);
 	test.run();
 	return 200;
 }
